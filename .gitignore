@@ -1,0 +1,9 @@
+.idea/
+
+# kicad
+fp-info-cache
+*-backups
+~*
+
+# python
+venv/
