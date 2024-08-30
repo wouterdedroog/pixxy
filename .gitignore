@@ -4,6 +4,7 @@
 fp-info-cache
 *-backups
 ~*
+_autosave*
 
 # python
 venv/

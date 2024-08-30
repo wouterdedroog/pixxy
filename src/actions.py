@@ -2,6 +2,7 @@ import ir
 import pixmob_ir_protocol as pmir
 from picozero import Pot
 
+speed = 0.4
 selected_colour = [255, 255, 255]
 
 
@@ -19,12 +20,28 @@ def current_colour():
     return selected_colour
 
 
+def current_speeds():
+    # divide current speed pot in 4 parts and base attack/sustain speeds on that
+    # when repeating, time between commands is 100-1000ms.
+    # 0/3: 100-325ms
+    # 1/3 = 325-550ms
+    # 2/3 = 550-775ms
+    # 3/3 = 775-1000ms
+    attack_speeds = [pmir.Time.TIME_32_MS, pmir.Time.TIME_96_MS, pmir.Time.TIME_192_MS, pmir.Time.TIME_192_MS]
+    sustain_speeds = [pmir.Time.TIME_96_MS, pmir.Time.TIME_192_MS, pmir.Time.TIME_192_MS, pmir.Time.TIME_480_MS]
+    current_speed = int(speed * 3)
+    return {
+        'attack_release': attack_speeds[current_speed],
+        'sustain': sustain_speeds[current_speed],
+    }
+
+
 def colour_fade(ir_led):
     fade_command = pmir.CommandSingleColorExt(
         red=current_colour()[0], green=current_colour()[1], blue=current_colour()[2],
-        attack=pmir.Time.TIME_192_MS,
-        sustain=pmir.Time.TIME_480_MS,
-        release=pmir.Time.TIME_192_MS,
+        attack=current_speeds()["attack_release"],
+        sustain=current_speeds()["sustain"],
+        release=current_speeds()["attack_release"],
     )
     ir.send_bits_command(fade_command.encode(), ir_led)
 
@@ -33,10 +50,16 @@ def colour_flash(ir_led):
     flash_command = pmir.CommandSingleColorExt(
         red=current_colour()[0], green=current_colour()[1], blue=current_colour()[2],
         attack=pmir.Time.TIME_0_MS,
-        sustain=pmir.Time.TIME_480_MS,
+        sustain=current_speeds()["sustain"],
         release=pmir.Time.TIME_32_MS,
     )
     ir.send_bits_command(flash_command.encode(), ir_led)
+
+
+def set_speed():
+    global speed
+    speed_pot = Pot(2)  # blue pot is used for setting speed
+    speed = speed_pot.value
 
 
 def on(ir_led):

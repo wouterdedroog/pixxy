@@ -59,4 +59,5 @@ def send_raw_ir_command(command, ir_pin):
         else:  # Odd index (space)
             ir_pin.duty_u16(0)
         sleep_us(duration)
+    ir_pin.duty_u16(0)  # make sure LED turns off
     ir_pin.deinit()

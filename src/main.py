@@ -24,9 +24,6 @@ def read_until(until_char, keep_result=True):
             result += char
     return result
 
-# todo: implement once / repeat switch
-# button = Pin(2, Pin.IN, Pin.PULL_UP)
-
 
 def run():
     try:
@@ -49,5 +46,3 @@ def run():
 
 if __name__ == '__main__':
     run()
-
-
