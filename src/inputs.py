@@ -28,7 +28,7 @@ def check(ir_led):
             if not row_pin.value():
                 action_matrix[row][col](ir_led)  # Call action for button at position x,y
 
-                if col == 3 and row == 0 or row == 1:
+                if col == 3 and (row == 0 or row == 1):
                     repeat_action_index = {"row": row, "col": col}
                 if col == 3 and row == 3:
                     repeat_action_index = None
