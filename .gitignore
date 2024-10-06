@@ -5,6 +5,8 @@ fp-info-cache
 *-backups
 ~*
 _autosave*
+\#auto_saved_files#
+jlcpcb/
 
 # python
 venv/
