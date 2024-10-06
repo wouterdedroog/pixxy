@@ -1,9 +1,13 @@
 import ir
 import pixmob_ir_protocol as pmir
-from picozero import Pot
+from machine import Pin, ADC
 
 speed = 0.4
 selected_colour = [255, 255, 255]
+
+dial_red = ADC(Pin(26))
+dial_green = ADC(Pin(27))
+dial_blue = ADC(Pin(28))
 
 
 def colour(red, green, blue):
@@ -13,10 +17,10 @@ def colour(red, green, blue):
 
 def current_colour():
     if selected_colour[0] is None:
-        dial_red = Pot(0)
-        dial_green = Pot(1)
-        dial_blue = Pot(2)
-        return [int(255 * dial_red.value), int(255 * dial_green.value), int(255 * dial_blue.value)]
+        dial_red_value = dial_red.read_u16() / 65535
+        dial_green_value = dial_green.read_u16() / 65535
+        dial_blue_value = dial_blue.read_u16() / 65535
+        return [int(255 * dial_red_value), int(255 * dial_green_value), int(255 * dial_blue_value)]
     return selected_colour
 
 
@@ -58,8 +62,7 @@ def colour_flash(ir_led):
 
 def set_speed():
     global speed
-    speed_pot = Pot(2)  # blue pot is used for setting speed
-    speed = speed_pot.value
+    speed = dial_blue.read_u16() / 65535  # blue pot is used for setting speed
 
 
 def on(ir_led):
